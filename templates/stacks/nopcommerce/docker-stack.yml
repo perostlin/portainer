@@ -1,1 +1,18 @@
+version: "3.4"
+services:
+    nopcommerce_web:
+        image: nopcommerceteam/nopcommerce:4.20
+        ports:
+            - "80:80"
+        depends_on:
+            - nopcommerce_database
+    nopcommerce_database:
+        image: "mcr.microsoft.com/mssql/server:2017-latest"
+        container_name: nopcommerce_mssql_server
+        environment:
+            SA_PASSWORD: ${NOPCOMMERCE_DATABASE_PASSWORD}
+            ACCEPT_EULA: "Y"
+            MSSQL_PID: "Express"
 
+volumes:
+  nopcommerce_data:  

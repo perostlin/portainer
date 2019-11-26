@@ -2,17 +2,28 @@ version: "3.7"
 services:
     nopcommerce_web:
         image: nopcommerceteam/nopcommerce:4.20
-        ports:
-            - "80:80"
+        deploy:
+          replicas: 1
+          restart_policy:
+            condition: on-failure
+            max_attempts: 3
+        volumes:
+          - nopcommerce_data:/app/App_Data
+          - nopcommerce_images:/app/wwwroot/images
         depends_on:
             - nopcommerce_database
+            
     nopcommerce_database:
-        image: "mcr.microsoft.com/mssql/server:2017-latest"
+        image: "mcr.microsoft.com/mssql/server:latest-ubuntu"
         container_name: nopcommerce_mssql_server
         environment:
             SA_PASSWORD: ${NOPCOMMERCE_DATABASE_PASSWORD}
             ACCEPT_EULA: "Y"
             MSSQL_PID: "Express"
+        volumes:
+          - nopcommerce_sql:/var/opt/mssql
 
-volumes:
-  nopcommerce_data:  
+volumes: 
+  nopcommerce_data:
+  nopcommerce_images:
+  nopcommerce_sql:
